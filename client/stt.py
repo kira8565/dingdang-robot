@@ -80,7 +80,7 @@ class PocketSphinxSTT(AbstractSTTEngine):
     VOCABULARY_TYPE = vocabcompiler.PocketsphinxVocabulary
 
     def __init__(self, vocabulary, hmm_dir="/usr/local/share/" +
-                 "pocketsphinx/model/hmm/en_US/hub4wsj_sc_8k"):
+                                           "pocketsphinx/model/hmm/en_US/hub4wsj_sc_8k"):
 
         """
         Initiates the pocketsphinx instance.
@@ -369,6 +369,7 @@ class SnowboySTT(AbstractSTTEngine):
             self._logger.info('snowboy 识别到了: %r', self.hotword)
             return [self.hotword]
         else:
+            self._logger.info("snowboy未识别成功")
             return []
 
     @classmethod
@@ -389,7 +390,7 @@ def get_engine_by_slug(slug=None):
         raise TypeError("Invalid slug '%s'", slug)
 
     selected_engines = filter(lambda engine: hasattr(engine, "SLUG") and
-                              engine.SLUG == slug, get_engines())
+                                             engine.SLUG == slug, get_engines())
     if len(selected_engines) == 0:
         raise ValueError("No STT engine found for slug '%s'" % slug)
     else:
@@ -411,6 +412,7 @@ def get_engines():
             subclasses.add(subclass)
             subclasses.update(get_subclasses(subclass))
         return subclasses
+
     return [tts_engine for tts_engine in
             list(get_subclasses(AbstractSTTEngine))
             if hasattr(tts_engine, 'SLUG') and tts_engine.SLUG]
