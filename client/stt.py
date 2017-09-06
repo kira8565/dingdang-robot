@@ -349,7 +349,7 @@ class SnowboySTT(AbstractSTTEngine):
                             profile['snowboy']['model']
                     else:
                         config['model'] = os.path.join(
-                            dingdangpath.LIB_PATH, 'snowboy/dingdang.pmdl')
+                            dingdangpath.LIB_PATH, 'snowboy/xiaomai.pmdl')
                     if 'sensitivity' in profile['snowboy']:
                         config['sensitivity'] = \
                             profile['snowboy']['sensitivity']
