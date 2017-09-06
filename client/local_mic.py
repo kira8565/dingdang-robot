@@ -32,3 +32,6 @@ class Mic:
 
     def say(self, phrase, OPTIONS=None):
         print("DINGDANG: %s" % phrase)
+
+    def stop_passive(self):
+        pass
