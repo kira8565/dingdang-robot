@@ -26,6 +26,7 @@ import diagnose
 import dingdangpath
 
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -74,6 +75,7 @@ class AbstractMp3TTSEngine(AbstractTTSEngine):
     """
     Generic class that implements the 'play' method for mp3 files
     """
+
     @classmethod
     def is_available(cls):
         return (super(AbstractMp3TTSEngine, cls).is_available() and
@@ -171,10 +173,10 @@ class EspeakTTS(AbstractTTSEngine):
         with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
             fname = f.name
         cmd = ['espeak', '-v', self.voice,
-                         '-p', self.pitch_adjustment,
-                         '-s', self.words_per_minute,
-                         '-w', fname,
-                         phrase]
+               '-p', self.pitch_adjustment,
+               '-s', self.words_per_minute,
+               '-w', fname,
+               phrase]
         cmd = [str(x) for x in cmd]
         self._logger.debug('Executing %s', ' '.join([pipes.quote(arg)
                                                      for arg in cmd]))
@@ -199,8 +201,8 @@ class FestivalTTS(AbstractTTSEngine):
     @classmethod
     def is_available(cls):
         if (super(cls, cls).is_available() and
-           diagnose.check_executable('text2wave') and
-           diagnose.check_executable('festival')):
+                diagnose.check_executable('text2wave') and
+                diagnose.check_executable('festival')):
 
             logger = logging.getLogger(__name__)
             cmd = ['festival', '--pipe']
@@ -377,8 +379,8 @@ class PicoTTS(AbstractTTSEngine):
     @property
     def languages(self):
         cmd = ['pico2wave', '-l', 'NULL',
-                            '-w', os.devnull,
-                            'NULL']
+               '-w', os.devnull,
+               'NULL']
         with tempfile.SpooledTemporaryFile() as f:
             subprocess.call(cmd, stderr=f)
             f.seek(0)
@@ -397,8 +399,8 @@ class PicoTTS(AbstractTTSEngine):
             fname = f.name
         cmd = ['pico2wave', '--wave', fname]
         if self.language not in self.languages:
-                raise ValueError("Language '%s' not supported by '%s'",
-                                 self.language, self.SLUG)
+            raise ValueError("Language '%s' not supported by '%s'",
+                             self.language, self.SLUG)
         cmd.extend(['-l', self.language])
         cmd.append(phrase)
         self._logger.debug('Executing %s', ' '.join([pipes.quote(arg)
@@ -494,6 +496,7 @@ class BaiduTTS(AbstractMp3TTSEngine):
                  'cuid': str(get_mac())[:32],
                  'per': self.per
                  }
+        self._logger.info("识别的语音为:%s" % phrase)
         r = requests.post('http://tsn.baidu.com/text2audio',
                           data=query,
                           headers={'content-type': 'application/json'})
@@ -536,7 +539,7 @@ def get_engine_by_slug(slug=None):
         raise TypeError("Invalid slug '%s'", slug)
 
     selected_engines = filter(lambda engine: hasattr(engine, "SLUG") and
-                              engine.SLUG == slug, get_engines())
+                                             engine.SLUG == slug, get_engines())
     if len(selected_engines) == 0:
         raise ValueError("No TTS engine found for slug '%s'" % slug)
     else:
@@ -557,6 +560,7 @@ def get_engines():
             subclasses.add(subclass)
             subclasses.update(get_subclasses(subclass))
         return subclasses
+
     return [tts_engine for tts_engine in
             list(get_subclasses(AbstractTTSEngine))
             if hasattr(tts_engine, 'SLUG') and tts_engine.SLUG]
